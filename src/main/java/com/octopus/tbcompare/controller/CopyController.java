@@ -3,11 +3,12 @@ package com.octopus.tbcompare.controller;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.octopus.tbcompare.common.ServerResponse;
+import com.octopus.tbcompare.enums.DatabaseEnum;
+import com.octopus.tbcompare.pojo.Databases;
+import com.octopus.tbcompare.pojo.TransType;
 import com.octopus.tbcompare.pojo.Type;
-import com.octopus.tbcompare.service.CopyService;
-import com.octopus.tbcompare.service.DatabaseService;
-import com.octopus.tbcompare.service.MapperService;
-import com.octopus.tbcompare.service.TypeService;
+import com.octopus.tbcompare.service.*;
+import com.octopus.tbcompare.util.DBTypeUtil;
 import com.octopus.tbcompare.vo.ColumnVo;
 import com.octopus.tbcompare.vo.TableVo;
 import org.apache.catalina.Server;
@@ -43,6 +44,8 @@ public class CopyController {
     private DatabaseService databaseService;
     @Autowired
     private TypeService typeService;
+    @Autowired
+    private TransTypeService transTypeService;
     @RequestMapping("/copy")
     public String index(Model model){
         model.addAttribute("databaseList",databaseService.getAll());
@@ -66,7 +69,21 @@ public class CopyController {
         try {
             List<ColumnVo> columnVoList = copyService.getColumnList(id,tableName);
             for (ColumnVo columnVo:columnVoList) {
-                columnVo.setType(mapperService.getTypeName(id,toId,columnVo.getType()));
+                Databases fromDb = databaseService.getById(id);
+                Databases toDb = databaseService.getById(toId);
+
+                int from = DBTypeUtil.getDbType(fromDb);
+                int to = DBTypeUtil.getDbType(toDb);
+
+                TransType transType = transTypeService.findType(from,to,columnVo.getType().toUpperCase());
+                //columnVo.setType(mapperService.getTypeName(id,toId,columnVo.getType()));
+                //todo
+                if (null!=transType){
+                    columnVo.setType(transType.getToType());
+                    if (!transType.getLegalSize()){
+                        columnVo.setSize("");
+                    }
+                }
             }
             return ServerResponse.createBySuccess(columnVoList);
         }catch (Exception e){
