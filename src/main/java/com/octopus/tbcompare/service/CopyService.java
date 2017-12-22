@@ -54,7 +54,7 @@ public class CopyService {
             sb.append(list.get(i).getName()+" ");
             sb.append(list.get(i).getType());
             sb.append(StringUtils.isNotBlank(list.get(i).getSize())?"("+ list.get(i).getSize()+")":" " );
-            sb.append(list.get(i).getIsPrimary()?"primary key":"");
+            sb.append(list.get(i).getIsPrimary()?" primary key":"");
             if (i<list.size()-1) {
                 sb.append((list.get(i).getIsPrimary() || list.get(i).getIsNull()) ? " , " : "not null,");
             }

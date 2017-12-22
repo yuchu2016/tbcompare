@@ -14,9 +14,13 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../Css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="../Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/combo.select.css" />
     <link rel="stylesheet" type="text/css" href="../Css/style.css" />
     <script type="text/javascript" src="../Js/jquery.js"></script>
     <script type="text/javascript" src="../Js/jquery.sorted.js"></script>
+
+    <script type="text/javascript" src="../Js/jquery.combo.select.js"></script>
+
     <script type="text/javascript" src="../Js/bootstrap.js"></script>
     <script type="text/javascript" src="../Js/ckform.js"></script>
     <script type="text/javascript" src="../Js/common.js"></script>
@@ -56,8 +60,10 @@
             </td>
             <td>表</td>
             <td>
-                <select class="table-list" name="table">
-                </select>
+                <div class="dowebok">
+                    <select class="table-list" >
+                    </select>
+                </div>
             </td>
         </tr>
         <tr>
@@ -123,10 +129,12 @@
                 $.each(result.data,function (i,field) {
                     $(".table-list").prepend("<option value="+field.name+">"+field.name+"</option>");
                 })
+                $('.table-list').comboSelect();
 
             })
 
         });
+
         $("#copy").click(function () {
             var id =$(".from-select").val();
             var tablename=$(".table-list").val();
